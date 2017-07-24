@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 
+import Todo from './Todo';
 
-// import { visibilityFilter } from './../reducers/reducers';
-
-const TodoList = (props) => {
+const TodoList = ({ todos, toggleTodo }) => {
   return (
     <ul>
-      {props.todos.map(todo => (
-        <li
+      {todos.map(todo => (
+        <Todo
           key={todo.id}
-          onClick={() => props.toggleTodo(todo.id)}
-          style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-          {todo.text}
-        </li>))}
+          onClick={() => toggleTodo(todo.id)}
+          text={todo.text}
+          completed={todo.completed}
+        />
+        ))}
     </ul>
   );
 };

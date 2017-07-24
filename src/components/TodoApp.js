@@ -2,24 +2,28 @@ import React, { Component } from 'react';
 
 import store from './../store/store';
 import { getVisibleTodos } from './../actions/actions';
+import AddTodo from './AddTodo';
 import TodoList from './TodoList';
-import Input from './Input';
-import FilterLink from './FilterLink';
+import Filters from './Filters';
 
 let nextTodoId = 0;
 class TodoApp extends Component {
   constructor(props) {
     super(props);
 
-    this.addTodo = this.addTodo.bind(this);
+    this.handleAddTodo = this.handleAddTodo.bind(this);
     this.onToggleTodo = this.onToggleTodo.bind(this);
     this.handleFiltering = this.handleFiltering.bind(this);
   }
 
-  addTodo() {
-    const task = this.inputValue.value;
+  onToggleTodo(id) {
+    store.dispatch({ id, type: 'TOGGLE_TODO'});
+  }
+
+  handleAddTodo(inputValue) {
+    const task = inputValue.value;
     if (task.length > 0) {
-      this.inputValue.value = '';
+      inputValue.value = '';
 
       store.dispatch({
         type: 'ADD_TODO',
@@ -27,10 +31,6 @@ class TodoApp extends Component {
         id: nextTodoId++
       });
     }
-  }
-
-  onToggleTodo(id) {
-    store.dispatch({ id, type: 'TOGGLE_TODO'});
   }
 
   handleFiltering(e, filter) {
@@ -44,14 +44,22 @@ class TodoApp extends Component {
 
     return (
       <div>
-        <Input inputRef={task => this.inputValue = task} />
-        <button onClick={this.addTodo}>Add Todo</button>
-        {/* <TodoList todos={store.getState().todos} /> */}
+        <AddTodo addTodo={this.handleAddTodo} />
 
-        <TodoList todos={visibleTodos} visibilityFilter={store.getState().visibilityFilter} toggleTodo={this.onToggleTodo} />
-        <p><FilterLink filter='SHOW_ALL' currentFilter={store.getState().visibilityFilter} onFiltering={this.handleFiltering}>All</FilterLink></p>
+        <TodoList
+          todos={visibleTodos}
+          visibilityFilter={store.getState().visibilityFilter}
+          toggleTodo={this.onToggleTodo}
+        />
+
+        <Filters
+          currentFilter={store.getState().visibilityFilter}
+          onFiltering={this.handleFiltering}
+        />
+
+        {/* <p><FilterLink filter='SHOW_ALL' currentFilter={store.getState().visibilityFilter} onFiltering={this.handleFiltering}>All</FilterLink></p>
         <p><FilterLink filter='SHOW_ACTIVE' currentFilter={store.getState().visibilityFilter} onFiltering={this.handleFiltering}>Active</FilterLink></p>
-        <p><FilterLink filter='SHOW_COMPLETED' currentFilter={store.getState().visibilityFilter} onFiltering={this.handleFiltering}>Completed</FilterLink></p>
+        <p><FilterLink filter='SHOW_COMPLETED' currentFilter={store.getState().visibilityFilter} onFiltering={this.handleFiltering}>Completed</FilterLink></p> */}
       </div>
     );
   }
