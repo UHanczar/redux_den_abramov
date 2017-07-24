@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "build": "webpack",
+    "watch": "webpack -w",
+    "server": "webpack-dev-server --hot --inline --port 3000 --open"
+  },
+  "dependencies": {
+    "babel-loader": "^7.1.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-env": "^2.4.1",
+    "webpack": "^3.3.0",
+    "webpack-dev-server": "^2.6.1"
+  }
+}
