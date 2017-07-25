@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import store from './../store/store';
-import { getVisibleTodos } from './../actions/actions';
+import { addTodoAction, toggleTodoAction, filterTodoAction, getVisibleTodos } from './../actions/actions';
 import AddTodo from './AddTodo';
 import TodoList from './TodoList';
 import Filters from './Filters';
 
-let nextTodoId = 0;
 class TodoApp extends Component {
   constructor(props) {
     super(props);
@@ -20,15 +19,16 @@ class TodoApp extends Component {
   componentDidMount() {
     this.unsubscribe = this.context.store.subscribe(() => {
       this.forceUpdate();
+      console.log(this.context.store.getState());
     });
   }
 
   componentWillUnmount() {
-    this.unsubscribe;
+    this.unsubscribe();
   }
 
   onToggleTodo(id) {
-    this.context.store.dispatch({ id, type: 'TOGGLE_TODO'});
+    this.context.store.dispatch(toggleTodoAction(id));
   }
 
   handleAddTodo(inputValue) {
@@ -36,18 +36,13 @@ class TodoApp extends Component {
     if (task.length > 0) {
       inputValue.value = '';
 
-      this.context.store.dispatch({
-        type: 'ADD_TODO',
-        text: task,
-        id: nextTodoId++
-      });
-      console.log(this.context.store.getState());
+      this.context.store.dispatch(addTodoAction(task));
     }
   }
 
   handleFiltering(e, filter) {
     e.preventDefault();
-    this.context.store.dispatch({ type: 'SET_VISIBILITY_FILTER', filter });
+    this.context.store.dispatch(filterTodoAction(filter));
   }
 
   render() {

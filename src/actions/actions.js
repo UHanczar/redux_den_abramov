@@ -18,6 +18,23 @@ export const todo = (state, action) => {
   }
 };
 
+let nextTodoId = 0;
+export const addTodoAction = (text) => {
+  return {
+    type: 'ADD_TODO',
+    text,
+    id: nextTodoId++
+  };
+};
+
+export const toggleTodoAction = (id) => {
+  return { id, type: 'TOGGLE_TODO'}
+};
+
+export const filterTodoAction = (filter) => {
+  return { type: 'SET_VISIBILITY_FILTER', filter }
+};
+
 export const getVisibleTodos = (todos, filter) => {
   switch (filter) {
     case 'SHOW_ALL':
