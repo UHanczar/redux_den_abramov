@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import store from './../store/store';
 import { getVisibleTodos } from './../actions/actions';
@@ -16,8 +17,18 @@ class TodoApp extends Component {
     this.handleFiltering = this.handleFiltering.bind(this);
   }
 
+  componentDidMount() {
+    this.unsubscribe = this.context.store.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe;
+  }
+
   onToggleTodo(id) {
-    store.dispatch({ id, type: 'TOGGLE_TODO'});
+    this.context.store.dispatch({ id, type: 'TOGGLE_TODO'});
   }
 
   handleAddTodo(inputValue) {
@@ -25,22 +36,23 @@ class TodoApp extends Component {
     if (task.length > 0) {
       inputValue.value = '';
 
-      store.dispatch({
+      this.context.store.dispatch({
         type: 'ADD_TODO',
         text: task,
         id: nextTodoId++
       });
+      console.log(this.context.store.getState());
     }
   }
 
   handleFiltering(e, filter) {
     e.preventDefault();
-    store.dispatch({ type: 'SET_VISIBILITY_FILTER', filter });
+    this.context.store.dispatch({ type: 'SET_VISIBILITY_FILTER', filter });
   }
 
   render() {
 
-    const visibleTodos = getVisibleTodos(store.getState().todos, store.getState().visibilityFilter);
+    const visibleTodos = getVisibleTodos(this.context.store.getState().todos, this.context.store.getState().visibilityFilter);
 
     return (
       <div>
@@ -48,12 +60,12 @@ class TodoApp extends Component {
 
         <TodoList
           todos={visibleTodos}
-          visibilityFilter={store.getState().visibilityFilter}
+          visibilityFilter={this.context.store.getState().visibilityFilter}
           toggleTodo={this.onToggleTodo}
         />
 
         <Filters
-          currentFilter={store.getState().visibilityFilter}
+          currentFilter={this.context.store.getState().visibilityFilter}
           onFiltering={this.handleFiltering}
         />
 
@@ -63,6 +75,11 @@ class TodoApp extends Component {
       </div>
     );
   }
+}
+
+// we need contextTypes to get store from Provider
+TodoApp.contextTypes = {
+  store: PropTypes.object
 }
 
 export default TodoApp;

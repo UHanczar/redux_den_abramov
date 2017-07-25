@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-// import { createStore, combineReducers } from 'redux';
+import PropTypes from 'prop-types';
+import { createStore, combineReducers } from 'redux';
 
-// import { todos, visibilityFilter } from './reducers/reducers';
-import store from './store/store';
+import { todos, visibilityFilter } from './reducers/reducers';
+// import store from './store/store';
 import TodoApp from './components/TodoApp';
 
-// const todoApp = combineReducers({ todos, visibilityFilter });
+const todoApp = combineReducers({ todos, visibilityFilter });
 
 // const store = createStore(todoApp);
 
@@ -17,10 +18,29 @@ import TodoApp from './components/TodoApp';
 // });
 // console.log(store.getState());
 
-const renderState = () => {
-  console.log(store.getState());
-  ReactDOM.render(<TodoApp />, document.getElementById('root'));
+class Provider extends Component {
+  getChildContext() {
+    return {
+      store: this.props.store
+    };
+  }
+  render() {
+    return this.props.children;
+  }
+}
+
+Provider.childContextTypes = {
+  store: PropTypes.object
 };
 
-renderState();
-store.subscribe(renderState);
+// const renderState = () => {
+  // console.log(store.getState());
+
+  ReactDOM.render(
+    <Provider store={createStore(todoApp)}>
+      <TodoApp />
+    </Provider>, document.getElementById('root'));
+// };
+
+// renderState();
+// store.subscribe(renderState);
